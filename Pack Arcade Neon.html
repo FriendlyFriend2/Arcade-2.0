@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pack Arcade Neon</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07040f;--card:#120b24;--ink:#f3eeff;--mute:#9b8fc0;--cy:#00f0ff;--pk:#ff2bd6;--lm:#7cff4f;--line:rgba(0,240,255,.35);
+color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.4;min-height:100vh;
+background:radial-gradient(800px 400px at 10% -10%,rgba(255,43,214,.25),transparent),radial-gradient(800px 400px at 100% 0,rgba(0,240,255,.2),transparent),linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/32px 32px,var(--bg)}
+.wrap{max-width:960px;margin:0 auto;padding:16px}
+h1,h2,h3{font-family:Orbitron,"Trebuchet MS",system-ui,sans-serif;margin:0 0 8px}
+h1{font-size:1.5rem;color:var(--cy);text-shadow:0 0 8px var(--cy),0 0 24px var(--pk)}
+h2{font-size:1.05rem;color:var(--pk);text-shadow:0 0 8px var(--pk)}
+h3{font-size:.9rem;margin-top:14px;color:var(--cy)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 0 14px rgba(0,240,255,.2);min-width:220px}
+.xpbar{height:8px;background:#000;border-radius:9px;margin-top:6px;overflow:hidden}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cy),var(--pk));box-shadow:0 0 10px var(--pk)}
+nav{display:flex;gap:6px;margin:14px 0;flex-wrap:wrap}
+nav button{flex:1;min-width:84px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:10px;transition:.15s}
+button:hover{box-shadow:0 0 12px var(--cy);border-color:var(--cy)}
+button.on,button.pri{background:linear-gradient(90deg,var(--cy),var(--pk));color:#07040f;border-color:transparent;font-weight:700}
+.panel{background:rgba(18,11,36,.85);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 0 18px rgba(255,43,214,.12)}
+input,textarea{font:inherit;width:100%;padding:9px;border-radius:10px;border:1px solid var(--line);background:#06020e;color:var(--ink)}
+input:focus,textarea:focus{outline:0;box-shadow:0 0 12px var(--cy)}
+textarea{min-height:130px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.muted{color:var(--mute);font-size:.9rem}
+.games,.packs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.game{border:1px solid var(--line);border-radius:12px;padding:12px;background:#0b0618}
+.game b{display:block;margin-bottom:8px;word-break:break-word}
+.pack{border-radius:14px;padding:14px;text-align:center;color:#fff;box-shadow:0 0 16px var(--a)}
+.pack .big{font-size:2.6rem}
+.pack button{margin-top:8px;color:#07040f;background:#fff;border:0;font-weight:700;width:100%}
+.reveal{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;min-height:10px}
+.c{width:118px;height:158px;perspective:600px;cursor:pointer}
+.c .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.c.f .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:6px;border:3px solid var(--line)}
+.back{background:repeating-linear-gradient(45deg,#2a0f5e,#2a0f5e 8px,#3f1a8a 8px,#3f1a8a 16px);color:var(--cy);font-size:2rem;text-shadow:0 0 10px var(--cy)}
+.front{transform:rotateY(180deg);background:var(--card)}
+.e{font-size:2.5rem}.n{font-size:.78rem;font-weight:600}.r{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em}
+.Common{border-color:#8a8fa8!important}.Rare{border-color:#00b3ff!important;box-shadow:0 0 10px #00b3ff}.Epic{border-color:#c13cff!important;box-shadow:0 0 14px #c13cff}.Legendary{border-color:#ffd400!important;box-shadow:0 0 22px #ffd400}
+.coll{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.item{border:3px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:.72rem;background:#0b0618}
+.item .e{font-size:1.7rem}.locked{opacity:.3;filter:grayscale(1)}
+.sw{display:inline-block;width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:6px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.opts button{text-align:left}.opts button.sel{border-color:var(--lm);box-shadow:0 0 12px var(--lm)}.opts button:disabled{opacity:.4;cursor:not-allowed}
+.holes{display:grid;grid-template-columns:repeat(3,84px);gap:8px;justify-content:center}
+.hole{height:84px;font-size:2.2rem;border-radius:50%}
+.mem{display:grid;grid-template-columns:repeat(4,72px);gap:8px;justify-content:center}
+.mc{height:72px;font-size:1.8rem}.mc.up{border-color:var(--lm)}
+.rx{width:100%;height:150px;font-size:1.3rem;font-weight:700}
+#player,#gate{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;flex-direction:column}
+#player.show{display:flex;padding-top:env(safe-area-inset-top,0px)}
+#player .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;gap:8px}
+#player iframe{flex:1;border:0;width:100%;background:#fff}
+#gate{display:flex;z-index:300;align-items:center;justify-content:center;padding:20px}
+.gbox{max-width:340px;width:100%;text-align:center;border:1px solid var(--pk);border-radius:16px;padding:24px;background:var(--card);box-shadow:0 0 30px var(--pk)}
+.gbox input,.gbox button{margin-top:10px;width:100%}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--cy);color:#07040f;font-weight:700;padding:10px 16px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none;z-index:400;box-shadow:0 0 18px var(--cy);text-align:center}
+.toast.show{opacity:1}
+#cur{position:fixed;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;pointer-events:none;z-index:500;display:none;line-height:1}
+.trail{position:fixed;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;z-index:499;transition:opacity .6s,transform .6s}
+body.hc *{cursor:none!important}
+#pin{position:fixed;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;background:radial-gradient(600px 400px at 50% 20%,rgba(255,43,214,.3),var(--bg))}
+.pbox{text-align:center;width:300px;padding:20px}
+.dots{display:flex;gap:16px;justify-content:center;margin:18px 0 6px}
+.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--cy)}
+.dots i.on{background:var(--cy);box-shadow:0 0 12px var(--cy)}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:14px;justify-content:center;margin-top:12px}
+.pad button{width:76px;height:76px;border-radius:50%;font-size:1.6rem;padding:0}
+.shake{animation:sh .4s}@keyframes sh{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+#tc{position:fixed;inset:0;pointer-events:none;z-index:499}
+#dots{display:none}
+#pl{position:relative;display:grid;grid-template-columns:repeat(3,64px);gap:28px;justify-content:center;margin:22px auto;touch-action:none;width:fit-content;user-select:none}
+.pd{width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.pd i{width:16px;height:16px;border-radius:50%;background:#fff;opacity:.6}
+.pd.on i{background:var(--cy);box-shadow:0 0 14px var(--cy);opacity:1;transform:scale(1.4)}
+#plsvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#rlog{height:260px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:6px}
+.msg{max-width:80%;padding:8px 12px;border-radius:14px}
+.msg.me{align-self:flex-end;background:linear-gradient(90deg,var(--cy),var(--pk));color:#07040f}
+.msg.bot{align-self:flex-start;background:#0b0618;border:1px solid var(--pk)}
+</style>
+</head>
+<body>
+<div id="gate"><div class="gbox"><h1>PACK ARCADE</h1><p class="muted">Enter the password to continue</p><input id="pw" type="password" placeholder="Password" autocomplete="off"><button class="pri" id="go">Enter</button><p id="gmsg" class="muted"></p></div></div>
+<canvas id="tc"></canvas><div id="cur"></div>
+<div id="pin"><div class="pbox"><h2>🔒 Draw your pattern</h2><div class="dots" id="dots"><i></i><i></i><i></i><i></i></div><p id="pmsg" class="muted">&nbsp;</p><div class="pad" id="pad" style="display:none"></div><div class="pl" id="pl"><svg id="plsvg"></svg></div></div></div>
+<div class="wrap">
+<header><h1>🎮 Pack Arcade</h1>
+<div class="stat"><div>🪙 <b id="coins">0</b> · <span id="title"></span></div><div class="muted">Level <b id="lvl">1</b> · <span id="xpt"></span></div><div class="xpbar"><i id="xpf"></i></div></div></header>
+<nav>
+<button data-t="games" class="on">Games</button><button data-t="mini">Mini Games</button><button data-t="riddle">Riddles</button><button data-t="packs">Packs</button>
+<button data-t="coll">Collection</button><button data-t="roast">Roast Bot</button><button data-t="ward">Wardrobe</button><button data-t="codes">Codes</button>
+</nav>
+
+<section id="games">
+<div class="panel"><h2>Load a game</h2>
+<p class="muted">Paste a game’s HTML code or upload an .html file. It is saved to your library and runs in a sandbox. Each launch earns 20 coins and 10 XP.</p>
+<input id="gname" placeholder="Game name">
+<textarea id="gcode" placeholder="Paste HTML game code here…" style="margin-top:8px"></textarea>
+<div class="row"><button class="pri" id="save">Save to library</button><button id="try">Play without saving</button>
+<label class="muted">or <input type="file" id="file" accept=".html,.htm,text/html" style="width:auto"></label></div></div>
+<div class="panel"><h2>Library</h2><div class="games" id="lib"></div></div>
+</section>
+
+<section id="mini" hidden>
+<div class="panel"><h2>Mini games</h2><p class="muted">Win coins and XP. XP unlocks turtle titles.</p>
+<div class="row" style="margin:0 0 12px"><button class="pri" id="m1">🐢 Turtle Whack</button><button class="pri" id="m2">🧠 Shell Memory</button><button class="pri" id="m3">⚡ Reflex Test</button><button class="pri" id="m4">🔢 Math Sprint</button><button class="pri" id="m5">🎨 Neon Simon</button><button class="pri" id="m6">👆 Click Speed</button><button class="pri" id="m7">🌈 Color Clash</button><button class="pri" id="m8">🔼 Higher or Lower</button><button class="pri" id="m9">⌨️ Typing Sprint</button></div>
+<div id="mgarea"><p class="muted">Pick a game to start.</p></div></div>
+</section>
+
+<section id="riddle" hidden><div class="panel"><h2>Riddle me this</h2><p class="muted">Solve riddles for coins and XP. Streak: <b id="rstreak">0</b></p><h3 id="rq" style="font-size:1.1rem;color:var(--ink)"></h3><p class="muted" id="rh"></p><div class="row"><input id="ra" placeholder="Your answer" style="flex:1"><button class="pri" id="rsub">Submit</button></div><div class="row"><button id="rhint">Hint</button><button id="rskip">Skip</button></div></div></section>
+
+<section id="packs" hidden>
+<div class="panel"><h2>Pack shop</h2><div class="packs" id="shop"></div></div>
+<div class="panel"><div class="reveal" id="reveal"></div>
+<div class="row" style="justify-content:center"><button id="flipall">Flip all</button></div>
+<p class="muted" id="hint" style="text-align:center">Open a pack to see your cards.</p></div>
+</section>
+
+<section id="coll" hidden><div class="panel"><h2>Collection <span class="muted" id="cprog"></span></h2><div id="grid"></div></div></section>
+
+<section id="ward" hidden>
+<div class="panel"><h2>Cursors</h2><div class="opts" id="curopts"></div></div>
+<div class="panel"><h2>Page skins</h2><div class="opts" id="skinopts"></div></div>
+<div class="panel"><h2>Turtle titles</h2><p class="muted">Level up from opening packs and playing mini games.</p><div class="opts" id="titleopts"></div></div>
+</section>
+
+<section id="roast" hidden><div class="panel"><h2>🔥 Roast Bot</h2><div id="rlog"></div><div class="row"><input id="rin" placeholder="Say something…" style="flex:1"><button class="pri" id="rsend">Send</button><button id="rme">Roast me</button></div></div></section>
+
+<section id="codes" hidden>
+<div class="panel"><h2>Redeem a code</h2>
+<div class="row" style="margin-top:0"><input id="code" placeholder="Enter code" style="flex:1"><button class="pri" id="redeem">Redeem</button></div>
+<p class="muted">Try: WELCOME, PACKTIME, LEGEND</p>
+<div class="row"><button id="daily">Daily bonus (+150 🪙, +25 XP)</button><button id="reset">Reset all data</button></div></div>
+</section>
+</div>
+
+<div id="player"><div class="bar"><b id="ptitle"></b><button class="pri" id="close">✕ Close</button></div><iframe id="frame" sandbox="allow-scripts allow-pointer-lock allow-forms allow-modals"></iframe></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const RK={C:"Common",R:"Rare",E:"Epic",L:"Legendary"},XPR={Common:1,Rare:3,Epic:8,Legendary:25};
+const PACKS=[
+{n:"Starter Pack",e:"📦",cost:100,a:"#00b8d4",b:"#6c3df5",p:{C:"🍎 Red Apple|🪵 Log|🪨 Pebble|🐟 Minnow|🧦 Lost Sock|🍄 Mushroom",R:"🦊 Swift Fox|🛡️ Iron Shield|🧪 Elixir|🦉 Night Owl",E:"⚔️ Star Blade|👑 Lost Crown|🦄 Unicorn",L:"🏆 Grand Trophy|🌈 Rainbow Core"}},
+{n:"Turtle Pack",e:"🐢",cost:150,a:"#22c55e",b:"#0ea5a4",p:{C:"🐢 Pond Turtle|🥬 Lettuce Leaf|🪷 Lily Pad|🐚 Tiny Shell",R:"🐢 Box Turtle|🌴 Beach Nest|🪸 Coral Perch",E:"🐢 Snapping Turtle|🏝️ Turtle Isle",L:"🐢 Golden Shell|🌍 World Turtle"}},
+{n:"Space Pack",e:"🚀",cost:200,a:"#6366f1",b:"#0f172a",p:{C:"☄️ Comet|🌙 Moon Rock|🛰️ Satellite|⭐ Lone Star",R:"👽 Little Alien|🪐 Ringed Planet|🚀 Rocket",E:"🌠 Nebula|🛸 UFO",L:"🕳️ Black Hole|☀️ Sun Core"}},
+{n:"Sea Pack",e:"🌊",cost:200,a:"#0ea5e9",b:"#1e3a8a",p:{C:"🐠 Clownfish|🦀 Crab|🐚 Seashell|🌿 Seaweed",R:"🐙 Octopus|🐬 Dolphin|🦈 Reef Shark",E:"🐋 Blue Whale|🧜 Mermaid",L:"🔱 Trident|🦑 Kraken"}},
+{n:"Volcano Pack",e:"🌋",cost:250,a:"#f97316",b:"#b91c1c",p:{C:"🪨 Basalt|💨 Ash Cloud|🔥 Ember|🌋 Little Cone",R:"💎 Obsidian|🦎 Lava Lizard|♨️ Geyser",E:"🌋 Magma Titan|🧨 Eruption",L:"🔥 Fire Heart|👑 Magma King"}},
+{n:"Mystic Pack",e:"🔮",cost:300,a:"#a855f7",b:"#be185d",p:{C:"🕸️ Cobweb|🧹 Broom|📜 Scroll|🕯️ Spell Candle",R:"🧙 Wizard|🐈‍⬛ Black Cat|🔮 Crystal Ball",E:"📖 Spellbook|🧞 Genie",L:"🪄 Infinity Wand|🌟 Wish Star"}},
+{n:"Dragon Pack",e:"🐉",cost:400,a:"#ef4444",b:"#7c3aed",p:{C:"🥚 Dragon Egg|🦴 Old Bone|🪙 Gold Coin|🔦 Cave Torch",R:"🐲 Baby Dragon|🏰 Dragon Keep|🗡️ Dragonbane",E:"🐉 Ember Dragon|❄️ Frost Wyrm",L:"🐉 Elder Dragon|💎 Dragon Hoard"}},
+{n:"Neon Pack",e:"⚡",cost:500,a:"#ff2bd6",b:"#00f0ff",p:{C:"🔋 Battery|💡 Bulb|🎧 Headphones|📟 Pager",R:"🕹️ Joystick|🤖 Robot|💿 Disc",E:"🎮 Pro Controller|👾 Arcade Alien",L:"⚡ Neon Bolt|🌈 Chroma Orb"}},
+{n:"Jungle Pack",e:"🌴",cost:250,a:"#16a34a",b:"#facc15",p:{C:"🍌 Banana|🌿 Vine|🐸 Tree Frog|🥥 Coconut",R:"🦜 Macaw|🐒 Monkey|🐍 Python",E:"🐅 Tiger|🦍 Silverback",L:"🌴 Hidden Temple|🦚 Sun Peacock"}},
+{n:"Candy Pack",e:"🍬",cost:200,a:"#ec4899",b:"#f97316",p:{C:"🍬 Lollipop|🍭 Swirl Pop|🍪 Cookie|🧁 Cupcake",R:"🍩 Glazed Donut|🍫 Choco Bar|🎂 Layer Cake",E:"🍦 Mega Sundae|🧇 Waffle Tower",L:"🍰 Golden Cake|🍡 Rainbow Taffy"}},
+{n:"Arctic Pack",e:"❄️",cost:250,a:"#38bdf8",b:"#e0f2fe",p:{C:"❄️ Snowflake|🧊 Ice Cube|🐧 Penguin|🧣 Scarf",R:"🦭 Seal|🐻‍❄️ Polar Bear|⛄ Snowman",E:"🦣 Mammoth|🏔️ Frozen Peak",L:"🌌 Aurora|💠 Frost Crown"}},
+{n:"Pirate Pack",e:"🏴‍☠️",cost:350,a:"#78350f",b:"#0f172a",p:{C:"🪝 Hook|🦜 Pirate Parrot|⚓ Anchor|🍖 Salted Meat",R:"🗺️ Treasure Map|💣 Cannonball|🏴‍☠️ Jolly Flag",E:"⛵ Pirate Ship|🧭 Magic Compass",L:"💰 Treasure Chest|☠️ Ghost Captain"}},
+{n:"Boss Pack",e:"👑",cost:1000,a:"#ffd400",b:"#ff2bd6",p:{C:"💠 Gem Shard|🪙 Boss Coin|🎖️ Medal|🔑 Gold Key",R:"💎 Diamond|🏅 Gold Medal|🎯 Bullseye",E:"🐢 Boss Turtle|🚀 Mega Rocket",L:"👑 Boss Crown|🌟 Mythic Star"}}];
+PACKS.forEach(k=>{for(const r in k.p)k.p[r]=k.p[r].split("|").map(x=>{const i=x.indexOf(" ");return[x.slice(0,i),x.slice(i+1)]})});
+const odds=c=>c<=150?{Common:70,Rare:22,Epic:7,Legendary:1}:c<=300?{Common:55,Rare:30,Epic:12,Legendary:3}:{Common:40,Rare:38,Epic:17,Legendary:5};
+const TITLES=[[1,"Turtle Hatchling"],[2,"Shell Scout"],[3,"Pond Paddler"],[5,"Sea Turtle Sailor"],[7,"Snapping Champion"],[10,"Shell Master"],[14,"Galápagos Giant"],[18,"Leatherback Legend"],[22,"World Turtle"],[999,"Turtle Boss"]];
+const CUR={default:{n:"Default",pv:"#888"},cyan:{n:"Neon Cyan",c:"#00f0ff",pv:"#00f0ff"},pink:{n:"Neon Pink",c:"#ff2bd6",pv:"#ff2bd6"},lime:{n:"Acid Lime",c:"#7cff4f",pv:"#7cff4f"},sun:{n:"Sun Yellow",c:"#ffe600",pv:"#ffe600"},orange:{n:"Hot Orange",c:"#ff7a00",pv:"#ff7a00"},rainbow:{n:"Rainbow Trail",t:1,pv:"conic-gradient(red,yellow,lime,cyan,blue,magenta,red)"},chroma:{n:"Chroma Ring",ring:1,pv:"radial-gradient(#07040f 45%,transparent 46%),conic-gradient(#0ff,#f0f,#ff0,#0ff)"},turtle:{n:"Turtle",emoji:"🐢",pv:"#22c55e"},fire:{n:"Fire",c:"#ff4500",pv:"#ff4500"},ice:{n:"Ice Blue",c:"#9fe8ff",pv:"#9fe8ff"},gold:{n:"Gold",c:"#ffd400",pv:"#ffd400"},violet:{n:"Violet",c:"#a855f7",pv:"#a855f7"},mint:{n:"Mint",c:"#2effc0",pv:"#2effc0"},rocket:{n:"Rocket",emoji:"🚀",pv:"#6366f1"},dragon:{n:"Dragon",emoji:"🐉",pv:"#ef4444"},ghost:{n:"Ghost",emoji:"👻",pv:"#ddd"},star:{n:"Star",emoji:"⭐",pv:"#ffe600"}};
+const SAMPLE=`<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;background:#102a43;color:#fff"><h2>Tap Clicker</h2><div id=n style="font-size:64px">0</div><button id=b style="font-size:28px;padding:16px 32px">TAP</button><script>let c=0;b.onclick=()=>n.textContent=++c<\/script></body></html>`;
+const CODES={WELCOME:300,PACKTIME:200,LEGEND:500};
+let S={coins:500,games:[{id:1,name:"Tap Clicker (sample)",code:SAMPLE}],owned:{},used:[],daily:0,lastEarn:0,xp:0,cursor:"default",title:0,inf:false};
+try{const r=localStorage.getItem("packarcade");if(r)Object.assign(S,JSON.parse(r))}catch(e){}
+const lvl=()=>S.boss?999:Math.floor(Math.sqrt(S.xp/60))+1;const unl=t=>S.boss||lvl()>=t[0];
+function head(){const l=lvl(),lo=60*(l-1)**2,hi=60*l*l;$("#coins").textContent=S.inf?"∞":S.coins;$("#lvl").textContent=S.boss?"∞":l;
+$("#title").textContent="🐢 "+TITLES[S.title][1];$("#xpt").textContent=S.boss?"∞ XP":`${S.xp} / ${hi} XP`;$("#xpf").style.width=S.boss?"100%":((S.xp-lo)/(hi-lo)*100)+"%"}
+function save(){try{localStorage.setItem("packarcade",JSON.stringify(S))}catch(e){}head()}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("show"),2400)}
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const addCoins=n=>{if(!S.inf)S.coins+=n};
+const spend=n=>{if(S.inf)return true;if(S.coins<n)return false;S.coins-=n;return true};
+function addXP(n){if(S.boss)return;const o=lvl();S.xp+=n;const nl=lvl();if(nl>o){const t=TITLES.filter(t=>t[0]>o&&t[0]<=nl).pop();setTimeout(()=>toast(`Level ${nl}!`+(t?` New title: ${t[1]}`:"")),600)}}
+function reward(c,x,m){addCoins(c);addXP(x);save();toast(`${m}: +${S.inf?0:c} 🪙 +${x} XP`)}
+
+/* gate */
+function unlock(){$("#gate").style.display="none"}
+try{if(sessionStorage.getItem("pa_ok")==="1")unlock()}catch(e){}
+function tryPw(){if($("#pw").value==="123"){try{sessionStorage.setItem("pa_ok","1")}catch(e){}unlock()}else{$("#gmsg").textContent="Wrong password";$("#pw").value=""}}
+$("#go").onclick=tryPw;$("#pw").onkeydown=e=>{if(e.key==="Enter")tryPw()};
+
+/* PIN lock */
+const PIN="disabled-keypad";let ent="";
+function pinOk(){$("#pin").style.display="none"}
+try{if(sessionStorage.getItem("pa_ok2")==="1")pinOk()}catch(e){}
+function pinDraw(){$$("#dots i").forEach((d,i)=>d.classList.toggle("on",i<ent.length))}
+function pinKey(k){if(k==="⌫")ent=ent.slice(0,-1);else if(ent.length<4)ent+=k;pinDraw();
+if(ent.length===4){if(ent===PIN){try{sessionStorage.setItem("pa_ok2","1")}catch(e){}setTimeout(pinOk,150)}
+else{$("#pmsg").textContent="Wrong PIN";const bx=$("#pin .pbox");bx.classList.add("shake");setTimeout(()=>{ent="";pinDraw();bx.classList.remove("shake")},500)}}}
+$("#pad").innerHTML=["1","2","3","4","5","6","7","8","9","","0","⌫"].map(k=>k?`<button>${k}</button>`:"<span></span>").join("");
+$$("#pad button").forEach(b=>b.onclick=()=>pinKey(b.textContent));
+document.addEventListener("keydown",e=>{if($("#pin").style.display==="none"||$("#gate").style.display!=="none")return;if(/^\d$/.test(e.key))pinKey(e.key);if(e.key==="Backspace")pinKey("⌫")});
+
+/* nav */
+$$("nav button").forEach(b=>b.onclick=()=>{$$("nav button").forEach(x=>x.classList.toggle("on",x===b));
+["games","mini","riddle","packs","coll","roast","ward","codes"].forEach(id=>$("#"+id).hidden=id!==b.dataset.t);
+stopMG();if(b.dataset.t==="coll")renderColl();if(b.dataset.t==="ward")renderWard()});
+
+/* games */
+function renderLib(){const L=$("#lib");L.innerHTML="";if(!S.games.length){L.innerHTML='<p class="muted">No games yet.</p>';return}
+S.games.forEach(g=>{const d=document.createElement("div");d.className="game";
+d.innerHTML=`<b>${esc(g.name)}</b><div class="row" style="margin-top:0"><button class="pri">▶ Play</button><button>Delete</button></div>`;
+const[p,x]=d.querySelectorAll("button");p.onclick=()=>play(g.name,g.code,true);
+x.onclick=()=>{S.games=S.games.filter(q=>q.id!==g.id);save();renderLib()};L.appendChild(d)})}
+function play(name,code,earn){$("#ptitle").textContent=name;$("#frame").srcdoc=code;$("#player").classList.add("show");
+if(earn&&Date.now()-S.lastEarn>30000){S.lastEarn=Date.now();reward(20,10,"Playing")}}
+$("#close").onclick=()=>{$("#player").classList.remove("show");$("#frame").srcdoc=""};
+$("#save").onclick=()=>{const code=$("#gcode").value.trim();if(!code)return toast("Paste some HTML code first");
+S.games.push({id:Date.now(),name:$("#gname").value.trim()||"Untitled game",code});save();renderLib();$("#gcode").value="";$("#gname").value="";toast("Game saved")};
+$("#try").onclick=()=>{const code=$("#gcode").value.trim();if(!code)return toast("Paste some HTML code first");play($("#gname").value.trim()||"Preview",code,false)};
+$("#file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+r.onload=()=>{$("#gcode").value=r.result;if(!$("#gname").value)$("#gname").value=f.name.replace(/\.html?$/i,"");toast("File loaded. Save or play it.")};r.readAsText(f)};
+
+/* packs */
+$("#shop").innerHTML=PACKS.map((k,i)=>`<div class="pack" style="--a:${k.a};background:linear-gradient(135deg,${k.a},${k.b})"><div class="big">${k.e}</div><b>${k.n}</b><div class="muted" style="color:#fff;opacity:.85">5 cards</div><button data-pack="${i}">Open · ${k.cost} 🪙</button></div>`).join("");
+function roll(o){let n=Math.random()*100,a=0;for(const r in o){a+=o[r];if(n<a)return r}return"Common"}
+$$("[data-pack]").forEach(b=>b.onclick=()=>{const k=PACKS[+b.dataset.pack];if(!spend(k.cost))return toast("Not enough coins. Play games or redeem codes.");
+const R=$("#reveal");R.innerHTML="";let left=5,xp=25;$("#hint").textContent="Tap each card to flip it";
+for(let i=0;i<5;i++){const r=roll(odds(k.cost)),key=Object.keys(RK).find(x=>RK[x]===r),pool=k.p[key],[e,n]=pool[Math.random()*pool.length|0];
+S.owned[n]=(S.owned[n]||0)+1;xp+=XPR[r];
+const c=document.createElement("div");c.className="c";
+c.innerHTML=`<div class="in"><div class="face back">?</div><div class="face front ${r}"><div class="e">${e}</div><div class="n">${n}</div><div class="r">${r}</div></div></div>`;
+c.onclick=()=>{if(c.classList.contains("f"))return;c.classList.add("f");if(--left===0)$("#hint").textContent="Pack complete!"};R.appendChild(c)}
+addXP(xp);save();toast(`+${xp} XP`);R.scrollIntoView({behavior:"smooth",block:"center"})});
+$("#flipall").onclick=()=>$$("#reveal .c").forEach((c,i)=>setTimeout(()=>c.classList.add("f"),i*150));
+
+function renderColl(){const G=$("#grid");G.innerHTML="";let H=0,T=0;
+PACKS.forEach(k=>{let have=0,tot=0,h="";for(const r in k.p)k.p[r].forEach(([e,n])=>{tot++;const c=S.owned[n]||0;if(c)have++;
+h+=`<div class="item ${RK[r]} ${c?"":"locked"}"><div class="e">${c?e:"❔"}</div>${c?esc(n):"???"}<br><span class="muted">${c?"×"+c:RK[r]}</span></div>`});
+H+=have;T+=tot;G.insertAdjacentHTML("beforeend",`<h3>${k.e} ${k.n} <span class="muted">${have}/${tot}</span></h3><div class="coll">${h}</div>`)});
+$("#cprog").textContent=`(${H}/${T})`}
+
+/* wardrobe + cursor */
+function renderWard(){renderSkins();const C=$("#curopts");C.innerHTML="";
+for(const id in CUR){const b=document.createElement("button");b.className=S.cursor===id?"sel":"";b.innerHTML=`<span class="sw" style="background:${CUR[id].pv}"></span>${CUR[id].n}`;
+b.onclick=()=>{S.cursor=id;save();applyCursor();renderWard()};C.appendChild(b)}
+const T=$("#titleopts");T.innerHTML="";
+TITLES.forEach((t,i)=>{const b=document.createElement("button"),ok=unl(t);b.disabled=!ok;b.className=S.title===i?"sel":"";
+b.textContent=ok?`🐢 ${t[1]}`:`🔒 ${t[1]} (${t[0]>99?"BOSS code":"Lv "+t[0]})`;b.onclick=()=>{S.title=i;save();renderWard()};T.appendChild(b)})}
+const cur=$("#cur");let hue=0,lastT=0,mx=0,my=0;
+function applyCursor(){const c=CUR[S.cursor]||CUR.default;document.body.classList.toggle("hc",S.cursor!=="default");
+cur.style.display=S.cursor==="default"?"none":"block";cur.textContent=c.emoji||"";cur.style.fontSize="22px";
+cur.style.background=c.c||"transparent";cur.style.border=c.ring?"3px solid #fff":"none";
+cur.style.boxShadow=c.c?`0 0 10px ${c.c},0 0 22px ${c.c}`:"none"}
+setInterval(()=>{hue=(hue+5)%360;const c=CUR[S.cursor];if(c&&(c.t||c.ring)){const col=`hsl(${hue} 100% 60%)`;
+if(c.t)cur.style.background=col;else cur.style.borderColor=col;cur.style.boxShadow=`0 0 10px ${col},0 0 24px ${col}`}},30);
+document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx}px,${my}px)`;
+const c=CUR[S.cursor];if(false){lastT=Date.now();const d=document.createElement("div");d.className="trail";
+d.style.cssText=`left:${mx}px;top:${my}px;background:hsl(${hue} 100% 60%);box-shadow:0 0 10px hsl(${hue} 100% 60%)`;document.body.appendChild(d);
+requestAnimationFrame(()=>{d.style.opacity=0;d.style.transform="scale(.2)"});setTimeout(()=>d.remove(),650)}});
+
+/* pattern lock */
+const PAT="0,1,2,5,8";let path=[],drag=false,px=0,py=0;
+const pl=$("#pl"),psv=$("#plsvg"),pdots=[];
+for(let i=0;i<9;i++){const d=document.createElement("div");d.className="pd";d.innerHTML="<i></i>";pl.appendChild(d);pdots.push(d)}
+const ctr=d=>[d.offsetLeft+d.offsetWidth/2,d.offsetTop+d.offsetHeight/2];
+function pdraw(){const p=path.map(i=>ctr(pdots[i]));if(drag)p.push([px,py]);
+psv.innerHTML=p.length>1?`<polyline points="${p.map(a=>a.join(",")).join(" ")}" fill="none" stroke="var(--cy)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 6px var(--cy))"/>`:""}
+function phit(e){const r=pl.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top;
+pdots.forEach((d,i)=>{const[x,y]=ctr(d);if(!path.includes(i)&&Math.hypot(px-x,py-y)<30){path.push(i);d.classList.add("on")}});pdraw()}
+pl.onpointerdown=e=>{drag=true;path=[];pdots.forEach(d=>d.classList.remove("on"));$("#pmsg").innerHTML="&nbsp;";pl.setPointerCapture(e.pointerId);phit(e)};
+pl.onpointermove=e=>{if(drag)phit(e)};
+pl.onpointerup=()=>{if(!drag)return;drag=false;pdraw();
+if(path.join(",")===PAT){try{sessionStorage.setItem("pa_ok2","1")}catch(e){}setTimeout(pinOk,200)}
+else{$("#pmsg").textContent="Wrong pattern";const bx=$("#pin .pbox");bx.classList.add("shake");setTimeout(()=>{bx.classList.remove("shake");path=[];pdots.forEach(d=>d.classList.remove("on"));pdraw()},500)}};
+
+/* skins */
+const SKINS={neon:["Neon (default)","#00f0ff","#ff2bd6"],sunset:["Sunset","#ffb300","#ff3d71"],toxic:["Toxic","#7cff4f","#00e5a8"],ice:["Ice","#9fe8ff","#6c8cff"],blood:["Blood Moon","#ff2b2b","#ff7a00"],royal:["Royal","#c084fc","#ffd400"],mono:["Mono","#ffffff","#9aa0b5"]};
+function applySkin(){const k=SKINS[S.skin||"neon"]||SKINS.neon,r=document.documentElement.style;r.setProperty("--cy",k[1]);r.setProperty("--pk",k[2]);r.setProperty("--line",k[1]+"59")}
+function renderSkins(){const C=$("#skinopts");C.innerHTML="";for(const id in SKINS){const k=SKINS[id],b=document.createElement("button");b.className=(S.skin||"neon")===id?"sel":"";
+b.innerHTML=`<span class="sw" style="background:linear-gradient(90deg,${k[1]},${k[2]})"></span>${k[0]}`;b.onclick=()=>{S.skin=id;save();applySkin();renderSkins()};C.appendChild(b)}}
+applySkin();
+
+/* roast bot */
+const RO=["Your pack luck is so bad even the Common cards ask for a refund.","I’ve seen faster loading screens on a turtle with a limp.","You open packs like you’re looking for your dignity. Spoiler: it’s not in there.","Your Reflex Test score is basically a geological timeline.","You call that a strategy? My cursor trail has a better plan.","Even the Starter Pack feels sorry for you.","You’re the reason the ‘Skip’ button exists.","If effort were XP, you’d still be a Hatchling.","Your memory game skills? Adorable. Like a goldfish with a Wi-Fi password.","You type like the keyboard owes you money.","Congrats on reading this. That’s your best score today.","You’d lose a staring contest to a Lily Pad."];
+const pick=a=>a[Math.random()*a.length|0];
+function roastLine(txt){const n=Object.keys(S.owned).length,l=lvl(),t=txt.toLowerCase();
+const dyn=[`Level ${l}? A rock levels up faster, and it doesn’t even try.`,`You own ${n} different cards. Impressive, if the goal was collecting dust.`,S.inf?"Infinite coins and still no skill. Bold.":`${S.coins} coins? That’s not a wallet, that’s a tip jar.`,`Your title is “${TITLES[S.title][1]}”. Even the title is faster than you.`];
+if(/turtle|shell/.test(t))return"Turtles are fast compared to your decision-making.";
+if(/win|best|pro|good/.test(t))return"Best? You lose to the Reflex Test and it’s one button.";
+if(/sorry|please|mercy/.test(t))return"Begging won’t help. Neither will your pack luck.";
+if(/roast/.test(t)||t.length<4)return pick(RO.concat(dyn));
+return pick([`“${txt.slice(0,40)}” is the best you’ve got? My cursor trail has more personality.`].concat(RO,dyn))}
+function addMsg(t,me){const d=document.createElement("div");d.className="msg "+(me?"me":"bot");d.textContent=t;const L=$("#rlog");L.appendChild(d);L.scrollTop=L.scrollHeight}
+function ask(t){addMsg(t,true);setTimeout(()=>addMsg("🔥 "+roastLine(t)),450)}
+$("#rsend").onclick=()=>{const v=$("#rin").value.trim();if(!v)return;$("#rin").value="";ask(v)};
+$("#rin").onkeydown=e=>{if(e.key==="Enter")$("#rsend").click()};
+$("#rme").onclick=()=>ask("Roast me");
+addMsg("Welcome to the Roast Bot. Say something and I’ll roast it, all in good fun! 🔥");
+
+/* long trails */
+const tc=$("#tc"),g=tc.getContext("2d");let pts=[],tx=-99,ty=-99;
+function rs(){tc.width=innerWidth;tc.height=innerHeight}rs();addEventListener("resize",rs);
+function loop(){const c=CUR[S.cursor];g.clearRect(0,0,tc.width,tc.height);
+if(c&&(c.t||c.ring||c.c)){if(tx===-99){if(mx){tx=mx;ty=my}else{requestAnimationFrame(loop);return}}
+tx+=(mx-tx)*.4;ty+=(my-ty)*.4;pts.unshift([tx,ty]);if(pts.length>70)pts.pop();g.lineCap="round";
+for(let i=pts.length-1;i>0;i--){const f=1-i/pts.length,col=(c.t||c.ring)?`hsl(${(hue+i*6)%360} 100% 60%)`:c.c;
+g.beginPath();g.moveTo(pts[i][0],pts[i][1]);g.lineTo(pts[i-1][0],pts[i-1][1]);g.strokeStyle=col;g.shadowColor=col;g.shadowBlur=12;g.lineWidth=1.5+f*7;g.stroke()}}
+else pts=[];requestAnimationFrame(loop)}loop();
+
+/* mini games */
+let mgT=[];const A=()=>$("#mgarea");
+function stopMG(){mgT.forEach(t=>{clearInterval(t);clearTimeout(t)});mgT=[]}
+function endMG(txt,fn){A().innerHTML=`<p>${txt}</p><button class="pri" id="again">Play again</button>`;$("#again").onclick=fn}
+function whack(){stopMG();let sc=0,t=20;
+A().innerHTML=`<p class="muted">Tap turtles 🐢 (+1). Avoid crabs 🦀 (−1). Time <b id="wt">20</b> · Score <b id="ws">0</b></p><div class="holes">${"<button class='hole'></button>".repeat(9)}</div>`;
+const H=[...A().querySelectorAll(".hole")];
+H.forEach(h=>h.onclick=()=>{if(!h.dataset.k)return;sc+=h.dataset.k==="t"?1:-1;h.textContent="";delete h.dataset.k;$("#ws").textContent=sc});
+mgT.push(setInterval(()=>{H.forEach(h=>{h.textContent="";delete h.dataset.k});const h=H[Math.random()*9|0],t=Math.random()>.25;h.dataset.k=t?"t":"c";h.textContent=t?"🐢":"🦀"},750));
+mgT.push(setInterval(()=>{$("#wt").textContent=--t;if(t<=0){stopMG();sc=Math.max(0,sc);reward(sc*10,10+sc*3,"Whack "+sc);endMG(`Time’s up! Score <b>${sc}</b>`,whack)}},1000))}
+function memory(){stopMG();const E=["🐢","🐚","🌊","🪷","🦀","🐠"],D=[...E,...E].sort(()=>Math.random()-.5);let open=[],moves=0,found=0,lock=false;
+A().innerHTML=`<p class="muted">Match all pairs. Moves: <b id="mv">0</b></p><div class="mem">${D.map((e,i)=>`<button class="mc" data-i="${i}">?</button>`).join("")}</div>`;
+A().querySelectorAll(".mc").forEach(b=>b.onclick=()=>{if(lock||b.classList.contains("up"))return;b.textContent=D[+b.dataset.i];b.classList.add("up");open.push(b);
+if(open.length===2){moves++;$("#mv").textContent=moves;const[x,y]=open;
+if(x.textContent===y.textContent){open=[];if(++found===6){reward(Math.max(20,120-moves*6),30,"Memory");setTimeout(()=>endMG(`Cleared in <b>${moves}</b> moves!`,memory),800)}}
+else{lock=true;setTimeout(()=>{x.textContent=y.textContent="?";x.classList.remove("up");y.classList.remove("up");open=[];lock=false},700)}}})}
+function reflex(){stopMG();A().innerHTML=`<button class="rx" id="rx">Click to start</button>`;let st=0,ph=0,to;const b=$("#rx");
+b.onclick=()=>{if(ph===0){ph=1;b.textContent="Wait for green…";b.style.background="#a00";
+to=setTimeout(()=>{ph=2;st=performance.now();b.textContent="CLICK!";b.style.background="#0a6"},1000+Math.random()*3000);mgT.push(to)}
+else if(ph===1){clearTimeout(to);ph=0;b.textContent="Too early! Click to retry";b.style.background=""}
+else{const ms=Math.round(performance.now()-st);ph=0;b.style.background="";b.textContent=`${ms} ms. Click to go again`;reward(Math.max(10,200-Math.floor(ms/3)),15,"Reflex")}}}
+function math(){stopMG();let sc=0,t=20,ans=0;
+A().innerHTML=`<p class="muted">Time <b id="mt">20</b> · Solved <b id="ms">0</b></p><h2 id="mq"></h2><div class="row"><input id="ma" type="number" inputmode="numeric" style="max-width:140px"><button class="pri" id="mb">OK</button></div>`;
+const nq=()=>{const a=2+Math.random()*12|0,b=2+Math.random()*12|0,op=["+","−","×"][Math.random()*3|0];ans=op==="+"?a+b:op==="−"?a-b:a*b;$("#mq").textContent=`${a} ${op} ${b} = ?`;$("#ma").value="";$("#ma").focus()};
+const go=()=>{if($("#ma").value!==""&&+$("#ma").value===ans)sc++;$("#ms").textContent=sc;nq()};
+$("#mb").onclick=go;$("#ma").onkeydown=e=>{if(e.key==="Enter")go()};nq();
+mgT.push(setInterval(()=>{$("#mt").textContent=--t;if(t<=0){stopMG();reward(sc*12,10+sc*4,"Math "+sc);endMG(`Time’s up! Solved <b>${sc}</b>`,math)}},1000))}
+function simon(){stopMG();const C=["#ff2bd6","#00f0ff","#7cff4f","#ffe600"];let seq=[],pos=0,lock=true;
+A().innerHTML=`<p class="muted">Watch, then repeat. Round <b id="sr">0</b></p><div class="holes" style="grid-template-columns:repeat(2,110px)">${C.map((c,i)=>`<button class="hole" style="border-radius:16px;height:110px;background:${c};opacity:.35"></button>`).join("")}</div>`;
+const B=[...A().querySelectorAll(".hole")];
+const flash=i=>{B[i].style.opacity=1;mgT.push(setTimeout(()=>B[i].style.opacity=.35,350))};
+const show=()=>{lock=true;pos=0;seq.push(Math.random()*4|0);$("#sr").textContent=seq.length;seq.forEach((v,k)=>mgT.push(setTimeout(()=>flash(v),600+k*600)));mgT.push(setTimeout(()=>lock=false,600+seq.length*600))};
+B.forEach((b,i)=>b.onclick=()=>{if(lock)return;flash(i);if(i!==seq[pos]){const r=seq.length-1;reward(r*15,10+r*5,"Simon "+r);return endMG(`Game over at round <b>${r+1}</b>`,simon)}
+if(++pos===seq.length)mgT.push(setTimeout(show,700))});show()}
+function clicks(){stopMG();let n=0,t=10,on=false;
+A().innerHTML=`<p class="muted">Click as fast as you can. Time <b id="ct">10</b> · Clicks <b id="cn">0</b></p><button class="rx" id="cb">Click to start!</button>`;
+$("#cb").onclick=()=>{if(!on){on=true;mgT.push(setInterval(()=>{$("#ct").textContent=--t;if(t<=0){stopMG();reward(n*3,10+n,"Clicks "+n);endMG(`<b>${n}</b> clicks (${(n/10).toFixed(1)}/s)`,clicks)}},1000))}n++;$("#cn").textContent=n;$("#cb").textContent="CLICK!"}}
+$("#m1").onclick=whack;$("#m2").onclick=memory;$("#m3").onclick=reflex;$("#m4").onclick=math;$("#m5").onclick=simon;$("#m6").onclick=clicks;$("#m7").onclick=stroop;$("#m8").onclick=hilo;$("#m9").onclick=typing;
+function stroop(){stopMG();let sc=0,t=20,ci=0;const N=["RED","BLUE","GREEN","YELLOW"],C=["#ff3b3b","#3b82ff","#34d058","#ffe600"];
+A().innerHTML=`<p class="muted">Tap the INK color, not the word. Time <b id="stt">20</b> · Score <b id="sts">0</b></p><h2 id="stw" style="font-size:2.4rem;text-align:center"></h2><div class="row" style="justify-content:center">${N.map((n,i)=>`<button data-i="${i}" style="border-color:${C[i]}">${n}</button>`).join("")}</div>`;
+const nx=()=>{const w=Math.random()*4|0;ci=Math.random()*4|0;const e=$("#stw");e.textContent=N[w];e.style.color=C[ci]};
+A().querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{if(+b.dataset.i===ci)sc++;else sc=Math.max(0,sc-1);$("#sts").textContent=sc;nx()});nx();
+mgT.push(setInterval(()=>{$("#stt").textContent=--t;if(t<=0){stopMG();reward(sc*10,10+sc*3,"Clash "+sc);endMG(`Score <b>${sc}</b>`,stroop)}},1000))}
+function hilo(){stopMG();let n=1+Math.random()*100|0,sc=0;
+A().innerHTML=`<p class="muted">Will the next number (1–100) be higher or lower? Streak <b id="hls">0</b></p><h2 id="hln" style="font-size:3rem;text-align:center">${n}</h2><div class="row" style="justify-content:center"><button class="pri" id="hlu">Higher ▲</button><button class="pri" id="hld">Lower ▼</button></div>`;
+const g=up=>{const m=1+Math.random()*100|0,ok=up?m>=n:m<=n;$("#hln").textContent=m;n=m;if(ok){sc++;$("#hls").textContent=sc}else{reward(sc*8,8+sc*4,"Streak "+sc);endMG(`Wrong! Streak <b>${sc}</b>`,hilo)}};
+$("#hlu").onclick=()=>g(true);$("#hld").onclick=()=>g(false)}
+function typing(){stopMG();const W=["turtle","shell","neon","dragon","volcano","galaxy","pirate","riddle","cursor","legend","kraken","pixel","rocket","glow","jungle","candy"];let sc=0,t=20,w="";
+A().innerHTML=`<p class="muted">Type the word, press Enter. Time <b id="tyt">20</b> · Words <b id="tyw">0</b></p><h2 id="tyd" style="text-align:center;letter-spacing:.1em"></h2><input id="tyi" autocomplete="off" autocapitalize="off">`;
+const nx=()=>{w=pick(W);$("#tyd").textContent=w;$("#tyi").value=""};
+$("#tyi").onkeydown=e=>{if(e.key==="Enter"){if($("#tyi").value.trim().toLowerCase()===w){sc++;$("#tyw").textContent=sc}nx()}};nx();$("#tyi").focus();
+mgT.push(setInterval(()=>{$("#tyt").textContent=--t;if(t<=0){stopMG();reward(sc*12,10+sc*4,"Typing "+sc);endMG(`<b>${sc}</b> words`,typing)}},1000))}
+
+/* riddles */
+const RID=[["I have keys but no locks, and space but no room. What am I?",["keyboard"]],["What has hands but can’t clap?",["clock","watch"]],["The more you take, the more you leave behind. What am I?",["footsteps","footstep","steps","step"]],["What gets wetter the more it dries?",["towel"]],["I speak without a mouth and hear without ears. What am I?",["echo"]],["I carry my home on my back and I’m never in a hurry. What am I?",["turtle","tortoise"]],["What can travel around the world while staying in one corner?",["stamp","postage stamp"]],["What has a head and a tail but no body?",["coin"]],["What goes up but never comes down?",["age"]],["I’m tall when I’m young and short when I’m old. What am I?",["candle"]],["What has many teeth but can’t bite?",["comb"]],["What breaks when you say its name?",["silence"]],["What has one eye but cannot see?",["needle"]],["What can fill a room but takes up no space?",["light"]],["What has eight arms and lives in the sea?",["octopus"]],["What has a shell and swims slowly through the sea?",["sea turtle","turtle"]]];
+RID.push(["What has a neck but no head?",["bottle"]],["What has four legs in the morning, two at noon and three in the evening?",["human","man","person"]],["What is full of holes but still holds water?",["sponge"]],["What runs but never walks?",["river","water"]],["What has a ring but no finger?",["phone","telephone"]],["What can you catch but not throw?",["cold"]],["What has words but never speaks?",["book"]],["What has a bottom at the top?",["legs","leg"]],["What begins with T, ends with T and has T in it?",["teapot"]],["Forward I’m heavy, backward I’m not. What am I?",["ton"]],["What has a thumb and four fingers but isn’t alive?",["glove"]],["What has cities but no houses, mountains but no trees and water but no fish?",["map"]],["What gets bigger the more you take away?",["hole"]],["What can you break without touching it?",["promise"]],["What has legs but doesn’t walk?",["table","chair"]],["What is black and white and read all over?",["newspaper"]],["What has a spine but no bones?",["book"]],["Which room has no doors or windows?",["mushroom"]],["What comes down but never goes up?",["rain"]],["What kind of key opens a banana?",["monkey"]],["What has 88 keys but can’t open a door?",["piano"]],["I’m light as a feather, yet the strongest person can’t hold me for five minutes. What am I?",["breath"]],["What word is spelled wrong in every dictionary?",["wrong"]],["What has a tongue but cannot talk?",["shoe"]],["What goes through cities and fields but never moves?",["road"]],["What has branches but no fruit or leaves?",["bank"]],["The more of me there is, the less you see. What am I?",["darkness","dark"]],["I fly without wings and cry without eyes. What am I?",["cloud"]],["What flies all day but never goes anywhere?",["flag"]],["What starts with E, ends with E and contains one letter?",["envelope"]],["What is at the end of a rainbow?",["w"]],["What has a face and two hands but no arms or legs?",["clock"]],["What is easy to get into but hard to get out of?",["trouble"]]);
+const WORDS=["turtle","dragon","volcano","galaxy","pirate","rainbow","treasure","penguin","octopus","rocket","planet","jungle","monkey","candy","castle","wizard","thunder","diamond","pyramid","dolphin","unicorn","phoenix","keyboard","cursor","shadow","forest","island","bubble","magnet","lantern"];
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const GEN=[()=>{const a=ri(1,20),d=ri(2,9);return[`What comes next? ${[0,1,2,3].map(i=>a+d*i).join(", ")}, ?`,[String(a+d*4)]]},
+()=>{const a=ri(1,5);return[`What comes next? ${[1,2,3,4].map(i=>a*2**(i-1)).join(", ")}, ?`,[String(a*16)]]},
+()=>{const x=ri(2,30),k=ri(1,20);return[`I’m a number. Double me and add ${k} and you get ${2*x+k}. What am I?`,[String(x)]]},
+()=>{const w=pick(WORDS);let s;do{s=w.split("").sort(()=>Math.random()-.5).join("")}while(s===w);return[`Unscramble these letters: ${s.toUpperCase()}`,[w]]},
+()=>{const n=ri(2,12);return[`How many legs do ${n} turtles have in total?`,[String(n*4)]]},
+()=>{const n=ri(2,9),m=ri(3,9);return[`A turtle walks ${n} steps every minute. How many steps in ${m} minutes?`,[String(n*m)]]},
+()=>{const n=ri(1,26);return[`What is letter number ${n} of the alphabet?`,[String.fromCharCode(96+n)]]},
+()=>{const a=ri(11,29),b=ri(11,29);return[`What is ${a} + ${b}?`,[String(a+b)]]}];
+const rnd=()=>Math.random()<.4?pick(RID):pick(GEN)();
+let rcur=null,streak=0,hinted=false;
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,"").replace(/^(a|an|the|your) /,"").trim();
+function nextRiddle(){let r;do{r=rnd()}while(r&&rcur&&r[0]===rcur[0]);rcur=r;hinted=false;$("#rq").textContent=r[0];$("#rh").textContent="";$("#ra").value="";$("#rstreak").textContent=streak}
+function rsubmit(){const v=norm($("#ra").value);if(!v)return;
+if(rcur[1].some(a=>norm(a)===v)){streak++;const x=hinted?8:20+Math.min(streak,5)*3;reward(15,x,"Riddle solved");nextRiddle()}
+else{streak=0;$("#rstreak").textContent=0;toast("Not quite. Try again!")}}
+$("#rsub").onclick=rsubmit;$("#ra").onkeydown=e=>{if(e.key==="Enter")rsubmit()};
+$("#rhint").onclick=()=>{hinted=true;const a=rcur[1][0];$("#rh").textContent=`Hint: starts with “${a[0]}”, ${a.length} letters`};
+$("#rskip").onclick=()=>{streak=0;toast("Answer: "+rcur[1][0]);nextRiddle()};
+nextRiddle();
+
+/* codes */
+$("#redeem").onclick=()=>{const k=$("#code").value.trim().toUpperCase();$("#code").value="";
+if(k==="BOSS"){if(S.boss)return toast("BOSS mode already active");S.boss=true;save();renderWard();return toast("👑 BOSS: all titles + infinite XP!")}
+if(k==="CODE123"){if(S.inf)return toast("Infinite coins already active");S.inf=true;save();return toast("♾️ Infinite coins unlocked!")}
+if(!CODES[k])return toast("Invalid code");if(S.used.includes(k))return toast("Code already used");
+S.used.push(k);addCoins(CODES[k]);save();toast(`+${CODES[k]} 🪙 redeemed`)};
+$("#daily").onclick=()=>{const t=new Date().toDateString();if(S.daily===t)return toast("Already claimed today");S.daily=t;reward(150,25,"Daily bonus")};
+$("#reset").onclick=()=>{if(confirm("Erase your library, cards, XP and coins?")){try{localStorage.removeItem("packarcade")}catch(e){}location.reload()}};
+
+if(S.title>=TITLES.length||!unl(TITLES[S.title]))S.title=0;
+save();renderLib();applyCursor();
+</script>
+</body>
+</html>
